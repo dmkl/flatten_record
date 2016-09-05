@@ -58,9 +58,8 @@ module FlattenRecord
         super(definition)
         
         @foreign_keys = []
-        primary_key = target_columns.select(&:primary).first
-        @id_column = IdColumn.new(self, primary_key, target_model, model)
         
+        @id_column = IdColumn.new(self, target_primary_key, target_model, model)
         @compute = build_compute(definition) || []
         @methods = build_methods(definition) || []
         @include = build_children(definition) || {}
@@ -193,8 +192,8 @@ module FlattenRecord
       end
 
       def allow_column?(col, definition)
-        return false if col.primary
-        return false if @foreign_keys.include?(col.name.to_s) 
+        return false if col == target_primary_key
+        return false if @foreign_keys.include?(col.name.to_s)
 
         if definition[:only].present?
           definition[:only].include?(col.name.to_sym) 

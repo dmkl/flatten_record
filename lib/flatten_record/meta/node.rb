@@ -66,6 +66,11 @@ module FlattenRecord
         target_model.columns
       end
 
+      def target_primary_key
+        pk = target_model.primary_key
+        target_columns.select { |c| c.name == pk }.first
+      end
+
       def inspect
         # this prevents irb/console to inspect
         # circular references on big tree caused problem on #inspect 
